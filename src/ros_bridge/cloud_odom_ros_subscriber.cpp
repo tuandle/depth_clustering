@@ -16,25 +16,25 @@
 #include "ros_bridge/cloud_odom_ros_subscriber.h"
 #include <eigen_conversions/eigen_msg.h>
 
-#include <vector>
-#include <string>
 #include <algorithm>
+#include <string>
+#include <vector>
 
 #include "utils/pose.h"
 
 namespace depth_clustering {
 
-using ros::NodeHandle;
 using message_filters::Subscriber;
 using message_filters::Synchronizer;
 using message_filters::sync_policies::ApproximateTime;
 using nav_msgs::Odometry;
+using ros::NodeHandle;
 using sensor_msgs::PointCloud2;
 using sensor_msgs::PointCloud2ConstPtr;
 
-using std::vector;
-using std::string;
 using std::map;
+using std::string;
+using std::vector;
 
 template <class T>
 T BytesTo(const vector<uint8_t>& data, uint32_t start_idx) {

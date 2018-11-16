@@ -11,7 +11,7 @@ target_link_libraries(show_objects_node
                       ${PCL_LIBRARIES}
                       ${CMAKE_THREAD_LIBS_INIT})
 
-if (${PCL_FOUND})
+#[[if (${PCL_FOUND})
   add_executable(save_clusters_node save_clusters_node.cpp)
   target_link_libraries(save_clusters_node
                         ros_bridge
@@ -23,4 +23,4 @@ if (${PCL_FOUND})
                         ${catkin_LIBRARIES}
                         ${OpenCV_LIBS}
                         ${PCL_LIBRARIES})
-endif()
+endif()]]

@@ -66,7 +66,7 @@ void Cloud::InitProjection(const ProjectionParams& params) {
   }
   _projection = CloudProjection::Ptr(new SphericalProjection(params));
   if (!_projection) {
-    fprintf(stderr, "ERROR: failed to initalize projection.\n");
+    fprintf(stderr, "ERROR: failed to initialize projection.\n");
     return;
   }
   _projection = _projection->Clone();

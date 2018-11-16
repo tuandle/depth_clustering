@@ -20,6 +20,7 @@
 #include <string>
 
 #include "ros_bridge/cloud_odom_ros_subscriber.h"
+#include "ros_bridge/cloud_ros_publisher.h"
 
 #include "clusterers/image_based_clusterer.h"
 #include "ground_removal/depth_ground_remover.h"
@@ -82,6 +83,8 @@ int main(int argc, char* argv[]) {
   string topic_clouds = "/velodyne_points";
 
   CloudOdomRosSubscriber subscriber(&nh, *proj_params_ptr, topic_clouds);
+  CloudRosPublisher publisher(nh, *proj_params_ptr, topic_clouds);
+
   Visualizer visualizer;
   visualizer.show();
 
@@ -98,14 +101,17 @@ int main(int argc, char* argv[]) {
   clusterer.SetDiffType(DiffFactory::DiffType::ANGLES);
 
   subscriber.AddClient(&depth_ground_remover);
+  publisher.AddClient(&depth_ground_remover);
   depth_ground_remover.AddClient(&clusterer);
   clusterer.AddClient(visualizer.object_clouds_client());
   subscriber.AddClient(&visualizer);
+  publisher.AddClient(&visualizer);
 
-  fprintf(stderr, "INFO: Running with angle tollerance: %f degrees\n",
+  fprintf(stderr, "INFO: Running with angle tolerance: %f degrees\n",
           angle_tollerance.ToDegrees());
 
   subscriber.StartListeningToRos();
+  publisher.StartListeningToRos();
   ros::AsyncSpinner spinner(1);
   spinner.start();
 
