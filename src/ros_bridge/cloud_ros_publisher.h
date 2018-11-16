@@ -50,8 +50,6 @@ class CloudRosPublisher : public AbstractSender<Cloud> {
   std::string _topic_odom;
 
   ProjectionParams _params;
-
-  int _msg_queue_size;
 };
 
 }  // namespace depth_clustering
