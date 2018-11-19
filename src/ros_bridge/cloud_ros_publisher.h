@@ -7,9 +7,12 @@
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <sensor_msgs/image_encodings.h>
+#include <pcl/point_cloud.h>
+#include <pcl_conversions/pcl_conversions.h>
 
 #include <map>
 #include <string>
+#include <unordered_map>
 
 #include "communication/abstract_sender.h"
 #include "utils/cloud.h"

@@ -20,11 +20,15 @@
 #include <message_filters/sync_policies/approximate_time.h>
 #include <message_filters/synchronizer.h>
 #include <nav_msgs/Odometry.h>
+#include <pcl/point_cloud.h>
+#include <pcl_conversions/pcl_conversions.h>
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
 
+#include <algorithm>
 #include <map>
 #include <string>
+#include <unordered_map>
 
 #include "communication/abstract_sender.h"
 #include "utils/cloud.h"
@@ -79,6 +83,7 @@ class CloudOdomRosSubscriber : public AbstractSender<Cloud> {
   Cloud::Ptr RosCloudToCloud(const PointCloudT::ConstPtr& msg);
 
   ros::NodeHandle* _node_handle;
+  ros::Publisher _cloud_pub;
 
   message_filters::Subscriber<PointCloudT>* _subscriber_clouds;
   message_filters::Subscriber<OdometryT>* _subscriber_odom;

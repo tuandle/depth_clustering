@@ -48,7 +48,7 @@ void CloudRosPublisher::CallbackVelodyne(
   img_header.stamp = msg_cloud->header.stamp;
   img_header.frame_id = "base_link";
   projected_img = cv_bridge::CvImage(
-      img_header, sensor_msgs::image_encodings::MONO16, _depth_to_pub);
+      img_header, sensor_msgs::image_encodings::TYPE_32FC1, _depth_to_pub);
   _depth_pub.publish(projected_img.toImageMsg());
 }
 
