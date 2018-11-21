@@ -187,6 +187,13 @@ class ProjectionParams {
    */
   static std::unique_ptr<ProjectionParams> HDL_64_EQUAL();
   /**
+   * @brief      Parameters for 64 beam Ouster Os1-64 with equal spacing between
+   *             the lasers.
+   *
+   * @return     A pointer to parameters
+   */
+  static std::unique_ptr<ProjectionParams> OS1_64();
+  /**
    * @brief      Default parameters for Velodyne from config file
    *
    * @return     A pointer to parameters

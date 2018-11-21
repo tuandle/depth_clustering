@@ -184,6 +184,20 @@ std::unique_ptr<ProjectionParams> ProjectionParams::HDL_64_EQUAL() {
   return mem_utils::make_unique<ProjectionParams>(params);
 }
 
+std::unique_ptr<ProjectionParams> ProjectionParams::OS1_64() {
+  auto params = ProjectionParams();
+  params.SetSpan(SpanParams(-180_deg, 180_deg, 870),
+                 SpanParams::Direction::HORIZONTAL);
+  params.SetSpan(SpanParams(16.6_deg, -16.6_deg, 64),
+                 SpanParams::Direction::VERTICAL);
+  params.FillCosSin();
+  if (!params.valid()) {
+    fprintf(stderr, "ERROR: params are not valid!\n");
+    return nullptr;
+  }
+  return mem_utils::make_unique<ProjectionParams>(params);
+}
+
 std::unique_ptr<ProjectionParams> ProjectionParams::HDL_64() {
   auto params = ProjectionParams();
   params.SetSpan(SpanParams(-180_deg, 180_deg, 870),

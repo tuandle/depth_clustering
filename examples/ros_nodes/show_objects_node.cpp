@@ -19,9 +19,9 @@
 
 #include <string>
 
+#include "ros_bridge/cloud_clusters_publisher.h"
 #include "ros_bridge/cloud_odom_ros_subscriber.h"
 #include "ros_bridge/cloud_ros_publisher.h"
-#include "ros_bridge/cloud_clusters_publisher.h"
 
 #include "clusterers/image_based_clusterer.h"
 #include "ground_removal/depth_ground_remover.h"
@@ -68,6 +68,9 @@ int main(int argc, char* argv[]) {
     case 64:
       proj_params_ptr = ProjectionParams::HDL_64();
       break;
+    case 641:
+      proj_params_ptr = ProjectionParams::OS1_64();
+      break;
   }
   if (!proj_params_ptr) {
     fprintf(stderr,
@@ -81,11 +84,12 @@ int main(int argc, char* argv[]) {
   ros::init(argc, argv, "show_objects_node");
   ros::NodeHandle nh;
 
-  string topic_clouds = "/velodyne_points";
+  /*string topic_clouds = "/velodyne_points";*/
+  string topic_clouds = "/os1_node/points";
   string topic_cluster = "/cloud_labeled_cluster";
   string pub_frame_id = "velodyne";
 
-  //CloudOdomRosSubscriber subscriber(&nh, *proj_params_ptr, topic_clouds);
+  // CloudOdomRosSubscriber subscriber(&nh, *proj_params_ptr, topic_clouds);
   CloudRosPublisher publisher(nh, *proj_params_ptr, topic_clouds);
   CloudClustersRosPublisher cluster_pub(&nh, pub_frame_id, topic_cluster);
 
@@ -104,18 +108,18 @@ int main(int argc, char* argv[]) {
   ClustererT clusterer(angle_tollerance, min_cluster_size, max_cluster_size);
   clusterer.SetDiffType(DiffFactory::DiffType::ANGLES);
 
-  //subscriber.AddClient(&depth_ground_remover);
+  // subscriber.AddClient(&depth_ground_remover);
   publisher.AddClient(&depth_ground_remover);
   depth_ground_remover.AddClient(&clusterer);
   clusterer.AddClient(visualizer.object_clouds_client());
   clusterer.AddClient(&cluster_pub);
-  //subscriber.AddClient(&visualizer);
+  // subscriber.AddClient(&visualizer);
   publisher.AddClient(&visualizer);
 
   fprintf(stderr, "INFO: Running with angle tolerance: %f degrees\n",
           angle_tollerance.ToDegrees());
 
-  //subscriber.StartListeningToRos();
+  // subscriber.StartListeningToRos();
   publisher.StartListeningToRos();
   ros::AsyncSpinner spinner(1);
   spinner.start();

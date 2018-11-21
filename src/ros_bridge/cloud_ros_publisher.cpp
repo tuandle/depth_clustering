@@ -37,7 +37,7 @@ CloudRosPublisher::CloudRosPublisher(const ros::NodeHandle& node_handle,
 
 void CloudRosPublisher::CallbackVelodyne(
     const PointCloudT::ConstPtr& msg_cloud) {
-  // PrintMsgStats(msg_cloud);
+  PrintMsgStats(msg_cloud);
   Cloud::Ptr cloud_ptr = RosCloudToCloud(msg_cloud);
   cloud_ptr->InitProjection(_params);
   ShareDataWithAllClients(*cloud_ptr);
@@ -63,7 +63,9 @@ Cloud::Ptr CloudRosPublisher::RosCloudToCloud(
   uint32_t x_offset = msg->fields[0].offset;
   uint32_t y_offset = msg->fields[1].offset;
   uint32_t z_offset = msg->fields[2].offset;
-  uint32_t ring_offset = msg->fields[4].offset;
+  // TODO (me) need to fix this to automatically
+  // detect ring field
+  uint32_t ring_offset = msg->fields[6].offset;
 
   Cloud cloud;
   for (uint32_t point_start_byte = 0, counter = 0;
@@ -79,6 +81,29 @@ Cloud::Ptr CloudRosPublisher::RosCloudToCloud(
   }
 
   return make_shared<Cloud>(cloud);
+}
+
+void CloudRosPublisher::PrintMsgStats(
+    const sensor_msgs::PointCloud2ConstPtr& msg) {
+  fprintf(stderr, "<<<<<<<<<<<<<<< new cloud >>>>>>>>>>>>>>>\n");
+  fprintf(stderr, "received msg   %d\n", msg->header.seq);
+  fprintf(stderr, "height:        %d\n", msg->height);
+  fprintf(stderr, "width:         %d\n", msg->width);
+  fprintf(stderr, "num of fields: %lu\n", msg->fields.size());
+  fprintf(stderr, "fields of each point:\n");
+  for (auto const& pointField : msg->fields) {
+    fprintf(stderr, "\tname:     %s\n", pointField.name.c_str());
+    fprintf(stderr, "\toffset:   %d\n", pointField.offset);
+    fprintf(stderr, "\tdatatype: %d\n", pointField.datatype);
+    fprintf(stderr, "\tcount:    %d\n", pointField.count);
+    fprintf(stderr, "\n");
+  }
+  fprintf(stderr, "is bigendian:  %s\n", msg->is_bigendian ? "true" : "false");
+  fprintf(stderr, "point step:    %d\n", msg->point_step);
+  fprintf(stderr, "row step:      %d\n", msg->row_step);
+  fprintf(stderr, "data size:     %lu\n", msg->data.size() * sizeof(msg->data));
+  fprintf(stderr, "is dense:      %s\n", msg->is_dense ? "true" : "false");
+  fprintf(stderr, "=========================================\n");
 }
 
 }  // namespace depth_clustering

@@ -41,6 +41,7 @@ class CloudRosPublisher : public AbstractSender<Cloud> {
    * @brief      Starts listening to ros.
    */
   void StartListeningToRos();
+  void PrintMsgStats(const sensor_msgs::PointCloud2ConstPtr& msg);
 
  protected:
   Cloud::Ptr RosCloudToCloud(const PointCloudT::ConstPtr& msg);
