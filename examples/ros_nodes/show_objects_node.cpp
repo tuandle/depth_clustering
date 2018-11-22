@@ -41,18 +41,23 @@ using ClustererT = ImageBasedClusterer<LinearImageLabeler<>>;
 
 int main(int argc, char* argv[]) {
   TCLAP::CmdLine cmd(
-      "Subscribe to /velodyne_points topic and show clustering on the data.",
-      ' ', "1.0");
+      "Subscribe to a pointcloud topic and show clustering on the data.", ' ',
+      "1.0");
   TCLAP::ValueArg<int> angle_arg(
       "", "angle",
       "Threshold angle. Below this value, the objects are separated", false, 10,
       "int");
   TCLAP::ValueArg<int> num_beams_arg(
-      "", "num_beams", "Num of vertical beams in laser. One of: [16, 32, 64].",
+      "", "num-beams", "Num of vertical beams in laser. One of: [16, 32, 64].",
       true, 0, "int");
+  TCLAP::ValueArg<string> pointcloud_topic_arg(
+      "", "pointcloud-topic",
+      "Pointcloud topic to subscribe to. Default to /velodyne_points", true,
+      "/velodyne_points", "string");
 
   cmd.add(angle_arg);
   cmd.add(num_beams_arg);
+  cmd.add(pointcloud_topic_arg);
   cmd.parse(argc, argv);
 
   Radians angle_tollerance = Radians::FromDegrees(angle_arg.getValue());
@@ -84,8 +89,8 @@ int main(int argc, char* argv[]) {
   ros::init(argc, argv, "show_objects_node");
   ros::NodeHandle nh;
 
-  /*string topic_clouds = "/velodyne_points";*/
-  string topic_clouds = "/os1_node/points";
+  string topic_clouds = pointcloud_topic_arg.getValue();
+  /*string topic_clouds = "/os1_node/points";*/
   string topic_cluster = "/cloud_labeled_cluster";
   string pub_frame_id = "velodyne";
 
