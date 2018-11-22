@@ -46,7 +46,7 @@ void CloudRosPublisher::CallbackVelodyne(
   cv_bridge::CvImage projected_img;
   std_msgs::Header img_header;
   img_header.stamp = msg_cloud->header.stamp;
-  img_header.frame_id = "base_link";
+  img_header.frame_id = "velodyne";
   projected_img = cv_bridge::CvImage(
       img_header, sensor_msgs::image_encodings::TYPE_32FC1, _depth_to_pub);
   _depth_pub.publish(projected_img.toImageMsg());
@@ -63,9 +63,23 @@ Cloud::Ptr CloudRosPublisher::RosCloudToCloud(
   uint32_t x_offset = msg->fields[0].offset;
   uint32_t y_offset = msg->fields[1].offset;
   uint32_t z_offset = msg->fields[2].offset;
-  // TODO (me) need to fix this to automatically
+  // TODO(me) need to fix this to automatically
   // detect ring field
-  uint32_t ring_offset = msg->fields[6].offset;
+  size_t ring_field_idx = 0;
+  for (size_t i = 3; i < msg->fields.size(); ++i) {
+    if (msg->fields[i].name == "ring") {
+      ring_field_idx = i;
+      break;
+    }
+  }
+  uint32_t ring_offset = msg->fields[4].offset;
+  if (ring_field_idx == 0) {
+    ROS_WARN(
+        "Pointcloud does not contain ring offset. Assuming value of VLP16. "
+        "This will cause the program to crash.");
+  } else {
+    ring_offset = msg->fields[ring_field_idx].offset;
+  }
 
   Cloud cloud;
   for (uint32_t point_start_byte = 0, counter = 0;
