@@ -37,7 +37,7 @@ CloudRosPublisher::CloudRosPublisher(const ros::NodeHandle& node_handle,
 
 void CloudRosPublisher::CallbackVelodyne(
     const PointCloudT::ConstPtr& msg_cloud) {
-  PrintMsgStats(msg_cloud);
+  // PrintMsgStats(msg_cloud);
   Cloud::Ptr cloud_ptr = RosCloudToCloud(msg_cloud);
   cloud_ptr->InitProjection(_params);
   ShareDataWithAllClients(*cloud_ptr);
@@ -63,8 +63,8 @@ Cloud::Ptr CloudRosPublisher::RosCloudToCloud(
   uint32_t x_offset = msg->fields[0].offset;
   uint32_t y_offset = msg->fields[1].offset;
   uint32_t z_offset = msg->fields[2].offset;
-  // TODO(me) need to fix this to automatically
-  // detect ring field
+  // This is to find the ring offset field. It's safe to assume the first 3
+  // fields are x,y,z
   size_t ring_field_idx = 0;
   for (size_t i = 3; i < msg->fields.size(); ++i) {
     if (msg->fields[i].name == "ring") {
@@ -72,6 +72,7 @@ Cloud::Ptr CloudRosPublisher::RosCloudToCloud(
       break;
     }
   }
+  // Safer to initialize to Velodyne lidar value?
   uint32_t ring_offset = msg->fields[4].offset;
   if (ring_field_idx == 0) {
     ROS_WARN(
