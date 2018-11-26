@@ -29,10 +29,12 @@ T BytesTo(const vector<uint8_t>& data, uint32_t start_idx) {
 
 CloudRosPublisher::CloudRosPublisher(const ros::NodeHandle& node_handle,
                                      const ProjectionParams& params,
-                                     const std::string& topic_clouds)
+                                     const std::string& topic_clouds,
+                                     const std::string& frame_id)
     : AbstractSender{SenderType::STREAMER}, _it(node_handle), _params{params} {
   _node_handle = node_handle;
   _topic_clouds = topic_clouds;
+  _frame_id = frame_id;
 }
 
 void CloudRosPublisher::CallbackVelodyne(
@@ -46,7 +48,7 @@ void CloudRosPublisher::CallbackVelodyne(
   cv_bridge::CvImage projected_img;
   std_msgs::Header img_header;
   img_header.stamp = msg_cloud->header.stamp;
-  img_header.frame_id = "velodyne";
+  img_header.frame_id = _frame_id;
   projected_img = cv_bridge::CvImage(
       img_header, sensor_msgs::image_encodings::TYPE_32FC1, _depth_to_pub);
   _depth_pub.publish(projected_img.toImageMsg());
