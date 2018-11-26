@@ -95,7 +95,7 @@ int main(int argc, char* argv[]) {
   string pub_frame_id = "velodyne";
 
   // CloudOdomRosSubscriber subscriber(&nh, *proj_params_ptr, topic_clouds);
-  CloudRosPublisher publisher(nh, *proj_params_ptr, topic_clouds);
+  CloudRosPublisher publisher(nh, *proj_params_ptr, topic_clouds, pub_frame_id);
   CloudClustersRosPublisher cluster_pub(&nh, pub_frame_id, topic_cluster);
 
   Visualizer visualizer;
