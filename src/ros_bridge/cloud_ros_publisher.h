@@ -3,12 +3,12 @@
 
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
+#include <pcl/point_cloud.h>
+#include <pcl_conversions/pcl_conversions.h>
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <sensor_msgs/image_encodings.h>
-#include <pcl/point_cloud.h>
-#include <pcl_conversions/pcl_conversions.h>
 
 #include <map>
 #include <string>
@@ -29,7 +29,8 @@ class CloudRosPublisher : public AbstractSender<Cloud> {
  public:
   CloudRosPublisher(const ros::NodeHandle& node_handle,
                     const ProjectionParams& params,
-                    const std::string& topic_clouds);
+                    const std::string& topic_clouds,
+                    const std::string& frame_id);
   virtual ~CloudRosPublisher() {}
   /**
    * @brief      Get point cloud from ROS
@@ -52,6 +53,7 @@ class CloudRosPublisher : public AbstractSender<Cloud> {
   image_transport::ImageTransport _it;
   std::string _topic_clouds;
   std::string _topic_odom;
+  std::string _frame_id;
 
   ProjectionParams _params;
 };
