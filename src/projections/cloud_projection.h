@@ -57,7 +57,7 @@ class CloudProjection {
    *
    * @param[in]  points  The points
    */
-  virtual void InitFromPoints(const std::vector<RichPoint>& points) = 0;
+  virtual void InitFromPoints(const RichPoint::AlignedVector& points) = 0;
 
   /**
    * @brief      Polymorphic clone of a projection.
@@ -96,7 +96,7 @@ class CloudProjection {
    *
    * @param[in]  points  The points to check
    */
-  void CheckCloudAndStorage(const std::vector<RichPoint>& points);
+  void CheckCloudAndStorage(const RichPoint::AlignedVector& points);
 
   /**
    * @brief      Unproject a point from depth image coordinate
