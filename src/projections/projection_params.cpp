@@ -186,7 +186,7 @@ std::unique_ptr<ProjectionParams> ProjectionParams::HDL_64_EQUAL() {
 
 std::unique_ptr<ProjectionParams> ProjectionParams::OS1_64() {
   auto params = ProjectionParams();
-  params.SetSpan(SpanParams(-180_deg, 180_deg, 1000),
+  params.SetSpan(SpanParams(-180_deg, 180_deg, 1024),
                  SpanParams::Direction::HORIZONTAL);
   params.SetSpan(SpanParams(16.6_deg, -16.6_deg, 64),
                  SpanParams::Direction::VERTICAL);
