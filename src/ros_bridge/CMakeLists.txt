@@ -1,4 +1,8 @@
-add_library(ros_bridge SHARED cloud_odom_ros_subscriber.cpp cloud_ros_publisher.cpp cloud_clusters_publisher)
+add_library(ros_bridge SHARED 
+						cloud_odom_ros_subscriber.cpp 
+						cloud_ros_publisher.cpp 
+						cloud_clusters_publisher.cpp 
+						ground_publisher.cpp)
 find_package(PCL REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge

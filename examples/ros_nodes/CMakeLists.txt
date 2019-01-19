@@ -4,6 +4,7 @@ target_link_libraries(show_objects_node
                       image_labeler
                       projections
                       ground_remove
+                      ground_retrieve
                       visualization
                       ${MY_QT_LIBRARIES}
                       ${Boost_LIBRARIES}

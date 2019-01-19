@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License along
 // with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SRC_GROUND_REMOVAL_DEPTH_GROUND_REMOVER_H_
-#define SRC_GROUND_REMOVAL_DEPTH_GROUND_REMOVER_H_
+#ifndef SRC_GROUND_RETRIEVAL_DEPTH_GROUND_REMOVER_H_
+#define SRC_GROUND_RETRIEVAL_DEPTH_GROUND_REMOVER_H_
 
 #include <opencv2/opencv.hpp>
 
@@ -36,21 +36,21 @@ namespace depth_clustering {
  *
  * @param      params  projection params
  */
-class DepthGroundRemover : public AbstractClient<Cloud>,
+class DepthGroundRetriever : public AbstractClient<Cloud>,
                            public AbstractSender<Cloud> {
   using ClientT = AbstractClient<Cloud>;
   using SenderT = AbstractSender<Cloud>;
 
  public:
-  explicit DepthGroundRemover(const ProjectionParams& params,
-                              const Radians& ground_remove_angle,
+  explicit DepthGroundRetriever(const ProjectionParams& params,
+                              const Radians& ground_retrieve_angle,
                               int window_size = 5)
       : ClientT{},
         SenderT{SenderType::STREAMER},
         _params{params},
         _window_size{window_size},
-        _ground_remove_angle{ground_remove_angle} {}
-  virtual ~DepthGroundRemover() {}
+        _ground_retrieve_angle{ground_retrieve_angle} {}
+  virtual ~DepthGroundRetriever() {}
 
   /**
    * @brief      when someone sends us an object we process it
@@ -134,7 +134,7 @@ class DepthGroundRemover : public AbstractClient<Cloud>,
 
   ProjectionParams _params;
   int _window_size = 5;
-  Radians _ground_remove_angle = 5_deg;
+  Radians _ground_retrieve_angle = 5_deg;
   float _eps = 0.001f;
 
   mutable int _counter = 0;
@@ -142,4 +142,4 @@ class DepthGroundRemover : public AbstractClient<Cloud>,
 
 }  // namespace depth_clustering
 
-#endif  // SRC_GROUND_REMOVAL_DEPTH_GROUND_REMOVER_H_
+#endif  // SRC_GROUND_RETRIEVAL_DEPTH_GROUND_REMOVER_H_

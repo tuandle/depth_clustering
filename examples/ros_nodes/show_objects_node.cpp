@@ -22,9 +22,12 @@
 #include "ros_bridge/cloud_clusters_publisher.h"
 #include "ros_bridge/cloud_odom_ros_subscriber.h"
 #include "ros_bridge/cloud_ros_publisher.h"
+#include "ros_bridge/ground_publisher.h"
 
+#include "clusterers/ground_clusterer.h"
 #include "clusterers/image_based_clusterer.h"
 #include "ground_removal/depth_ground_remover.h"
+#include "ground_retrieval/depth_ground_retriever.h"
 #include "projections/ring_projection.h"
 #include "projections/spherical_projection.h"
 #include "utils/radians.h"
@@ -38,6 +41,7 @@ using std::string;
 using namespace depth_clustering;
 
 using ClustererT = ImageBasedClusterer<LinearImageLabeler<>>;
+/*using ClustererT = GroundClusterer<LinearImageLabeler<>>;*/
 
 int main(int argc, char* argv[]) {
   TCLAP::CmdLine cmd(
@@ -92,11 +96,13 @@ int main(int argc, char* argv[]) {
   string topic_clouds = pointcloud_topic_arg.getValue();
   /*string topic_clouds = "/os1_node/points";*/
   string topic_cluster = "/cloud_labeled_cluster";
+  string topic_ground = "/ground_cloud";
   string pub_frame_id = "velodyne";
 
   // CloudOdomRosSubscriber subscriber(&nh, *proj_params_ptr, topic_clouds);
   CloudRosPublisher publisher(nh, *proj_params_ptr, topic_clouds, pub_frame_id);
   CloudClustersRosPublisher cluster_pub(&nh, pub_frame_id, topic_cluster);
+  GroundPublisher ground_pub(&nh, pub_frame_id, topic_ground);
 
   Visualizer visualizer;
   visualizer.show();
@@ -106,18 +112,28 @@ int main(int argc, char* argv[]) {
 
   int smooth_window_size = 7;
   Radians ground_remove_angle = 7_deg;
+  Radians ground_retrieve_angle = 7_deg;
 
   auto depth_ground_remover = DepthGroundRemover(
       *proj_params_ptr, ground_remove_angle, smooth_window_size);
 
+  auto depth_ground_retriever = DepthGroundRetriever(
+      *proj_params_ptr, ground_retrieve_angle, smooth_window_size);
+
   ClustererT clusterer(angle_tollerance, min_cluster_size, max_cluster_size);
+  // if extracting ground, comment out the next line
   clusterer.SetDiffType(DiffFactory::DiffType::ANGLES);
 
   // subscriber.AddClient(&depth_ground_remover);
-  publisher.AddClient(&depth_ground_remover);
-  depth_ground_remover.AddClient(&clusterer);
+  // change this to get ground
+   publisher.AddClient(&depth_ground_remover);
+  //publisher.AddClient(&depth_ground_retriever);
+
+   depth_ground_remover.AddClient(&clusterer);
+  //depth_ground_retriever.AddClient(&clusterer);
   clusterer.AddClient(visualizer.object_clouds_client());
   clusterer.AddClient(&cluster_pub);
+
   // subscriber.AddClient(&visualizer);
   publisher.AddClient(&visualizer);
 

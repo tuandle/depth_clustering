@@ -16,10 +16,10 @@
 #ifndef SRC_CLUSTERERS_IMAGE_BASED_CLUSTERER_H_
 #define SRC_CLUSTERERS_IMAGE_BASED_CLUSTERER_H_
 
+#include <opencv/cv.h>
 #include <chrono>
 #include <ctime>
 #include <map>
-#include <opencv/cv.h>
 #include <string>
 #include <unordered_map>
 #include <vector>

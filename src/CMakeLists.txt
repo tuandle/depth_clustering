@@ -1,5 +1,6 @@
 add_subdirectory(communication)
 add_subdirectory(ground_removal)
+add_subdirectory(ground_retrieval)
 add_subdirectory(image_labelers)
 add_subdirectory(visualization)
 add_subdirectory(projections)

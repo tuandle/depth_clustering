@@ -45,18 +45,26 @@ void CloudClustersRosPublisher::ImageToPcl(
   int i = 0;
   for (const auto& kv : clouds) {
     const auto& cluster = kv.second;
+    if (cluster.empty()) {
+      fprintf(stderr, "cluster is empty\n");
+      continue;
+    }
+    /*fprintf(stderr, "cluster is NOT empty\n");*/
     pcl::PointCloud<PointT> pcl_temp;
     PointT min_p;
     PointT max_p;
     for (const auto& point : cluster.points()) {
       PointT p;
-      p.x = point.x();
+      p.x = point.x(); 
       p.y = point.y();
       p.z = point.z();
-      p.label = i;
+      p.label = kv.first; // change back to i for clusterers
       pcl_temp.push_back(p);
     }
-    pcl::getMinMax3D(pcl_temp, min_p, max_p);
+    pcl_cloud += pcl_temp;
+    ++i;
+    
+    /*pcl::getMinMax3D(pcl_temp, min_p, max_p);
 
     double dif_x = max_p.x - min_p.x;
     double dif_y = max_p.y - min_p.y;
@@ -66,7 +74,7 @@ void CloudClustersRosPublisher::ImageToPcl(
         (dif_x * dif_x + dif_y * dif_y + dif_z * dif_z) < 3) {
       pcl_cloud += pcl_temp;
       i++;
-    }
+    }*/
   }
 }
 
